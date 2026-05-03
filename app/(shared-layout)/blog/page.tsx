@@ -1,20 +1,27 @@
-// app/(shared-layout)/blog/page.tsx
-
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
 import { fetchQuery } from "convex/nextjs";
 import { Metadata } from "next";
+import { cacheLife, cacheTag } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
 import React, { Suspense } from "react";
 
-// FIX: Force dynamic rendering to prevent the build from failing 
-// when it tries to fetch Convex data without a live connection.
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-static";
+// 'auto', | 'force-dynamic | 'error' | force-static
 
-export const metadata: Metadata = {
+//revalidating data
+
+//time based revalidation, 30 is seconds
+// export const revalidate = 30;
+// false | 0 | number
+
+//on demand revalidation, more on condition
+
+//static metadata
+export const  metadata: Metadata = {
   title: "My Blog",
   description: 'Read new blogs',
   category: 'Web development',
@@ -43,8 +50,11 @@ const BlogPage = () => {
 export default BlogPage;
 
 async function LoadBlogList() {
-
-  const data = await fetchQuery(api.posts.getPosts);
+  "use cache";
+  cacheLife("hours"); //time based revalidation
+  cacheTag("blog") ;
+  //fetching data on server side
+  const data = await fetchQuery(api.posts.getPosts); //by using this we will lose all reactivity
 
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -52,16 +62,16 @@ async function LoadBlogList() {
         <Card key={post._id} className="pt-0">
           <div className="relative h-48 w-full overflow-hidden">
             <Image
-              src={post.imageUrl ?? "https://images.unsplash.com/photo-1773176647951-d8f618dee942?q=80&w=870&auto=format&fit=crop"}
+              src={post.imageUrl ?? "https://images.unsplash.com/photo-1773176647951-d8f618dee942?q=80&w=870&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
               fill
               alt="blog image"
               className="rounded-t-lg object-cover"
-            />
+            />{" "}
+            {/* it's mandatory to put relative in parent component classname for the fill property of image to work as intended */}
           </div>
 
           <CardContent>
-            {/* FIXED: Added the missing "/" to ensure the link path is valid */}
-            <Link href={`/blog/${post._id}`}>
+            <Link href={`/blog${post._id}`}>
               <h1 className="text-2xl font-bold hover:text-primary">
                 {post.title}
               </h1>
@@ -84,6 +94,7 @@ async function LoadBlogList() {
     </div>
   );
 }
+
 
 function SkeletonLoadingUi(){
   return(
