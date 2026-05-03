@@ -4,9 +4,9 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { api } from "@/convex/_generated/api";
 import { fetchQuery } from "convex/nextjs";
 import { Metadata } from "next";
+import { cacheLife, cacheTag } from "next/cache";
 import Image from "next/image";
 import Link from "next/link";
-import { connection } from "next/server";
 import React, { Suspense } from "react";
 
 // export const dynamic = "force-static";
@@ -50,11 +50,10 @@ const BlogPage = () => {
 export default BlogPage;
 
 async function LoadBlogList() {
-  // "use cache";
-  // cacheLife("hours"); //time based revalidation
-  // cacheTag('blog') 
-  // //fetching data on server side
-  await connection(); //fetch data dynamically / switch to prod
+  "use cache";
+  cacheLife("hours"); //time based revalidation
+  cacheTag('blog') 
+  //fetching data on server side
   const data = await fetchQuery(api.posts.getPosts); //by using this we will lose all reactivity
 
   return (
