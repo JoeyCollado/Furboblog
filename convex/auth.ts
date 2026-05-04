@@ -14,7 +14,8 @@ export const authComponent = createClient<DataModel>(components.betterAuth);
 
 export const createAuth = (ctx: GenericCtx<DataModel>) => {
   return betterAuth({
-    baseURL: siteUrl,
+    secret: "aHzsju83iPU9arlQSDUSzh7fRzBCaqbT", 
+    baseURL: "https://furboblogy.vercel.app",
     database: authComponent.adapter(ctx),
     // Configure simple, non-verified email/password to get started
     emailAndPassword: {
