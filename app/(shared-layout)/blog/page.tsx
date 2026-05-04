@@ -51,10 +51,11 @@ const BlogPage = () => {
 export default BlogPage;
 
 async function LoadBlogList() {
-  "use cache";
-  cacheLife("hours"); //time based revalidation
-  cacheTag('blog') 
+  // "use cache";
+  // cacheLife("hours"); //time based revalidation
+  // cacheTag('blog') 
   //fetching data on server side
+  await connection();
   const data = await fetchQuery(api.posts.getPosts); //by using this we will lose all reactivity
 
   return (
