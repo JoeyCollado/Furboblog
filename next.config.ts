@@ -11,8 +11,8 @@ const nextConfig: NextConfig = {
         port: "",
       },
       {
-        hostname: 'tough-rook-353.convex.cloud', // switch to prod url from convex
-        protocol: 'https',
+        hostname: "tough-rook-353.convex.cloud", // switch to prod url from convex
+        protocol: "https",
         port: "",
       }
     ]
